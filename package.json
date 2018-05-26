@@ -1,0 +1,24 @@
+{
+  "name": "autogen-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [
+    "genetic algorithm"
+  ],
+  "author": "DJW",
+  "license": "ISC",
+  "dependencies": {
+    "escodegen": "^1.9.1",
+    "esprima": "^4.0.0",
+    "genetic-js": "^0.1.14",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "jest": "^22.4.4"
+  }
+}
