@@ -13,6 +13,7 @@
   "author": "DJW",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.1",
     "escodegen": "^1.9.1",
     "esprima": "^4.0.0",
     "genetic-js": "^0.1.14",

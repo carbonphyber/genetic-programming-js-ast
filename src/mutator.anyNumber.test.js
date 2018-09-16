@@ -15,6 +15,14 @@ describe('mutator.anyNumber', () => {
       expect(rec).toHaveProperty(['expression', 'argument', 'type'], 'Literal');
       expect(rec).toHaveProperty(['expression', 'argument', 'value'], v);
       expect(rec).toHaveProperty(['expression', 'argument', 'raw'], String(v));
+    } else if (rec.type === 'UnaryExpression') {
+      v = rec.argument.value;
+      expect(rec).toHaveProperty(['type'], 'UnaryExpression');
+      expect(rec).toHaveProperty(['operator'], '-');
+      expect(rec).toHaveProperty(['prefix'], true);
+      expect(rec).toHaveProperty(['argument', 'type'], 'Literal');
+      expect(rec).toHaveProperty(['argument', 'value'], v);
+      expect(rec).toHaveProperty(['argument', 'raw'], String(v));
     } else {
       v = rec.value;
       expect(rec).toHaveProperty(['type'], 'Literal');
