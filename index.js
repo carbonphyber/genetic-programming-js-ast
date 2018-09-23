@@ -6,7 +6,7 @@ const escodegen = require('escodegen'),
   
     GeneticJS = require('./src/geneticjs'),
     mutator = require('./src/mutator'),
-    TESTS = require('./gentests/2'),
+    TESTS = require('./gentests/1'),
 
     MAX_PER_TEST = 300,
     GOAL_PERCENTAGE = 0.98;
@@ -21,7 +21,7 @@ const escodegen = require('escodegen'),
         'fittestAlwaysSurvives': 1,
         'iterations': 20000,
         'maxResults': 9999999,
-        'size': 20,
+        'size': 50,
         'crossover': 0.4,
         'mutation': 0.5,
         'skip': 20,

@@ -6,8 +6,6 @@ const chalk = require('chalk'),
   fill = require('lodash/fill'),
   map = require('lodash/map'),
   sample = require('lodash/sample'),
-  shuffle = require('lodash/shuffle'),
-  union = require('lodash/union'),
 
   Genetic = require('./genetic'),
   mutator = require('./mutator');
@@ -62,7 +60,7 @@ class GeneticJS extends Genetic {
 
   seed() {
     // start with a random assortment of 1-5 expression components
-    let a = map(Array(Math.floor(1 + Math.random() * 3)), mutator.anyReturnStatement);
+    let a = map(Array(Math.floor(1 + Math.random() * 3)), mutator.anyBlockStatement);
 
 //     try {
 // console.log('genetic.seed (after)', createCodeFromAST(a));
@@ -83,103 +81,43 @@ class GeneticJS extends Genetic {
 //       // 
 //     }
 
-    const THRESHOLD = {
-        DELETE: 0.90,
-        SHUFFLE: 0.85,
-        UPDATE: 0.4,
-        INSERT: 0.0,
-
-        // DELETE: 0.9999995,
-        // SHUFFLE: 0.9999990,
-        // UPDATE: 0.35,
-        // INSERT: 0.30,
-      },
-      PARAMS = ['arguments[0]', 'arguments[1]', 'arguments[2]'],
-      NUMBERS = '0123456789'.split(''),
-      STRANGE_NUMBERS = ['+Infinity', '-Infinity', '+0', '-0', ],
-      OPERATORS_BINARY = [';', ',', '||', '&&', '==' , '!=', '===', '!==', '>', '>=', '<', '<=', '+', '-', '/', '*', '%', '**', '&', '|', '^', '<<', '>>', '>>>'],
-      OPERATORS_UNARY = ['!', '~', '++', '--', '-', '+'],
-      desiredDatatype = ['undefined', 'number', 'boolean', 'string', 'object'].map(e => '"' + e + '"'),
-      badDatatype = ['undefined', 'NaN', 'null', 'true', 'false', '[]', '{}'],
-      ALL_OPERATORS = union(OPERATORS_BINARY, OPERATORS_UNARY),
-      ALL_LITERALS = union(PARAMS, desiredDatatype, badDatatype, NUMBERS, STRANGE_NUMBERS),
-      allElements = union(PARAMS, OPERATORS_BINARY, OPERATORS_UNARY, desiredDatatype, badDatatype, NUMBERS, STRANGE_NUMBERS),
-      randOfArray = (a) => a[Math.floor(Math.random() * a.length)],
-      NUM_OPTIONS = 3;
+    const THRESHOLD_DELETE = 0.95,
+        THRESHOLD_SHUFFLE = 0.92,
+        THRESHOLD_UPDATE = 0.15,
+        THRESHOLD_INSERT = 0.00;
 
     let randVal = Math.random() * 1,
-      pos = Math.floor(Math.random() * entity.length),
-      newElem;
-  
+      pos = Math.floor(Math.random() * entity.length);
+
+    if (!entity[pos]) return entity;
+
     // generate a random operation
-    if(randVal > THRESHOLD.DELETE) {
+    if(randVal > THRESHOLD_DELETE) {
       if (DEBUG_LOGGING) console.log('mutate DELETE');
-      // delete a term
-      entity.splice(pos, 1);
+
+      entity = mutator.deleteSomething(entity);
 
     // 
     } else
-    if(randVal > THRESHOLD.SHUFFLE) {
+    if(randVal > THRESHOLD_SHUFFLE) {
       if (DEBUG_LOGGING) console.log('mutate SHUFFLE');
-      // shuffle terms
-      entity = shuffle(entity);
+
+      entity = mutator.shuffleSomething(entity);
 
     // 
     } else
-    if(randVal > THRESHOLD.UPDATE) {
+    if(randVal > THRESHOLD_UPDATE) {
       if (DEBUG_LOGGING) console.log('mutate UPDATE');
-      // update a term
-      let astNode = entity[pos];
-      // temporary hack to avoid dealing with rare chance of `undefined` value for astNode
-      if (!astNode) return entity;
 
-      if ('BlockStatement' === astNode.type) {
-        // randomly pick to either modify the top-level node or a node inside of it
-        if (sample([true, false])) {
-          astNode = mutator.anyBlockStatement();
-        } else {
-          if (astNode.body.length < 1) {
-            astNode.body[0] = mutator.anyBlockStatement();
-          } else {
-            const posLvl2 = Math.floor(Math.random() * astNode.body.length);
-            astNode.body[posLvl2] = mutator.anyBlockStatement();
-          }
-        }
-      } else if ('ReturnStatement' === astNode.type) {
-        // randonly pick to either modify the top-level node or a node inside of it
-        if (sample([true, false])) {
-          astNode = mutator.anyBlockStatement();
-        } else {
-          astNode.argument = mutator.anyExpression();
-        }
-      } else if ('ExpressionStatement' === astNode.type) {
-        if (sample([true, false])) {
-          astNode = mutator.anyBlockStatement();
-        } else {
-          astNode.expression = mutator.anyExpression();
-        }
-      }
-
-      // update the element to the same type as previous to update
-      entity[pos] = astNode;
+      entity = mutator.updateSomething(entity);
   
     // 
     } else
-    if(randVal > THRESHOLD.INSERT) {
+    if(randVal > THRESHOLD_INSERT) {
       if (DEBUG_LOGGING) console.log('mutate INSERT');
-      // insert new term(s)
-      let numInserts = Math.random() * 3;
-      while(numInserts-- > 0.0) {
-        pos = Math.floor(Math.random() * entity.length);
-        newElem = mutator.anyReturnStatement();
-        if (pos === 0) {
-          entity = union([newElem], entity);
-        } else if (pos === entity.length) {
-          entity = union(entity, [newElem]);
-        } else {
-          entity = union(entity.slice(0, pos + 1), [newElem], entity.slice(pos + 1));
-        }
-      }
+
+      entity = mutator.insertSomething(entity);
+
     } else {
       if (DEBUG_LOGGING) console.log('mutate ELSE');
     }
