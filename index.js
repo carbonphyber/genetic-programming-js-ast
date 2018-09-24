@@ -1,13 +1,11 @@
 'use strict';
 
-const escodegen = require('escodegen'),
-    esprima = require('esprima'),
-    _ = require('lodash'),
-  
-    GeneticJS = require('./src/geneticjs'),
-    mutator = require('./src/mutator'),
+const GeneticJS = require('./src/geneticjs'),
     TESTS = require('./gentests/1'),
 
+    nowUnixEpoch = function nowUnixEpoch() {
+        return (new Date).valueOf() / 1000;
+    },
     MAX_PER_TEST = 300,
     GOAL_PERCENTAGE = 0.98;
 
@@ -21,9 +19,9 @@ const escodegen = require('escodegen'),
         'fittestAlwaysSurvives': 1,
         'iterations': 20000,
         'maxResults': 9999999,
-        'size': 50,
+        'size': 40,
         'crossover': 0.4,
-        'mutation': 0.5,
+        'mutation': 0.85,
         'skip': 20,
     }, {
         // the test set (array)
@@ -34,6 +32,6 @@ const escodegen = require('escodegen'),
         'goal': TESTS.length * MAX_PER_TEST * GOAL_PERCENTAGE,
     
         // timestamp of the start of the genetic algo (number)
-        'startedAt': (new Date).valueOf() / 1000,
+        'startedAt': nowUnixEpoch(),
     });
 })();
