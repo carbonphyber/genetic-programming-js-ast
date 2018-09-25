@@ -1,7 +1,7 @@
 module.exports = [
   {
     params: [0, 1],
-    expected: 5,
+    expected: 1,
   },
   {
     params: [1, 1],
@@ -77,15 +77,15 @@ module.exports = [
   },
   {
     params: [1, 10],
-    expected: 8,
+    expected: 12,
   },
   {
     params: [100, 1000],
-    expected: 800,
+    expected: 1200,
   },
   {
     params: [1000, 10000],
-    expected: 8000,
+    expected: 12000,
   },
   {
     params: [false, -111],
@@ -111,14 +111,14 @@ module.exports = [
   //   params: [-111, {}],
   //   expected: NaN,
   // },
-  {
-    params: [[], -111],
-    expected: -111,
-  },
-  {
-    params: [-111, []],
-    expected: -222,
-  },
+  // {
+  //   params: [[], -111],
+  //   expected: -111,
+  // },
+  // {
+  //   params: [-111, []],
+  //   expected: -222,
+  // },
   // {
   //   params: [undefined, undefined],
   //   expected: NaN,

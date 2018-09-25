@@ -17,12 +17,12 @@ const GeneticJS = require('./src/geneticjs'),
   
     g.evolve({
         'fittestAlwaysSurvives': 1,
-        'iterations': 20000,
+        'iterations': 200000,
         'maxResults': 9999999,
-        'size': 40,
+        'size': 100,
         'crossover': 0.4,
         'mutation': 0.85,
-        'skip': 20,
+        'skip': 200,
     }, {
         // the test set (array)
         'TESTS': TESTS,

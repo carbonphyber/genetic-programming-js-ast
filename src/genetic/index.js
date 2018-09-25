@@ -212,8 +212,8 @@ class GeneticAbstract {
 
             if (
                 isFinished ||
-                conf["skip"] == 0 ||
-                i % conf["skip"] == 0
+                conf["skip"] === 0 ||
+                i % conf["skip"] === 0
             ) {
                 this.sendNotification(pop.slice(0, conf["maxResults"]), i, stats, isFinished);
             }

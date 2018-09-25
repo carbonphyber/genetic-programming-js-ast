@@ -35,8 +35,8 @@ const flatten = require('lodash/flatten'),
     createWeightedArray(6, '%'),
     createWeightedArray(4, '+'),
     createWeightedArray(4, '-'),
-    createWeightedArray(1, '/'),
-    createWeightedArray(1, '*'),
+    createWeightedArray(2, '/'),
+    createWeightedArray(2, '*'),
     createWeightedArray(1, '**'),
     createWeightedArray(1, 'in'),
     createWeightedArray(1, 'instanceof'),
@@ -410,35 +410,90 @@ const flatten = require('lodash/flatten'),
   // 
   updateSomething = function (entity) {
       // update a term
-      let pos = Math.floor(Math.random() * entity.length);
-      // temporary hack to avoid dealing with rare chance of `undefined` value for astNode
-      if (!entity[pos]) return entity;
+      const sampleOf2 = sample([0, 1]),
+        sampleOf3 = sample([0, 1, 2]),
+        sampleOf4 = sample([0, 1, 2, 3]);
 
-      if ('BlockStatement' === entity[pos].type) {
+      // console.log('updateSomething: ', JSON.stringify(entity, null, 4));
+
+      if (Array.isArray(entity)) {
+        const pos = sample(range(entity.length));
+        entity[pos] = updateSomething(entity[pos]);
+      } else if ('BlockStatement' === entity.type) {
         // randomly pick to either modify the top-level node or a node inside of it
-        if (sample([true, false])) {
-          entity[pos] = anyBlockStatement();
-        } else {
-          if (entity[pos].body.length < 1) {
-            entity[pos].body[0] = anyBlockStatement();
-          } else {
-            const posLvl2 = Math.floor(Math.random() * entity[pos].body.length);
-            entity[pos].body[posLvl2] = anyBlockStatement();
+        if (0 === sampleOf2) {
+          entity = anyBlockStatement();
+        } else if (1 === sampleOf2) {
+          if (entity.body.length > 0) {
+            // randomly pick one element of the body array
+            const posLvl2 = sample(range(entity.body.length));
+            // recursion
+            entity.body[posLvl2] = updateSomething(entity.body[posLvl2]);
           }
         }
-      } else if ('ReturnStatement' === entity[pos].type) {
+      } else if ('ReturnStatement' === entity.type) {
         // randonly pick to either modify the top-level node or a node inside of it
-        if (sample([true, false])) {
-          entity[pos] = anyBlockStatement();
-        } else {
-          entity[pos].argument = anyExpression();
+        if (0 === sampleOf3) {
+          entity = anyReturnStatement();
+        } else if (1 === sampleOf3) {
+          entity.argument = anyExpression();
         }
-      } else if ('ExpressionStatement' === entity[pos].type) {
-        if (sample([true, false])) {
-          entity[pos] = anyBlockStatement();
-        } else {
-          entity[pos].expression = anyExpression();
+      } else if ('ExpressionStatement' === entity.type) {
+        if (0 === sampleOf2) {
+          entity = anyExpressionStatement();
+        } else if (1 === sampleOf2) {
+          entity.expression = anyExpression();
         }
+      } else if ('ConditionalExpression' === entity.type) {
+        if (0 === sampleOf4) {
+          entity = anyConditional();
+        } else if (1 === sampleOf4) {
+          entity.test = sample(CONDITIONAL_TESTS);
+        } else if (2 === sampleOf4) {
+          entity.consequent = anyBlockStatement();
+        } else if (3 === sampleOf4) {
+          entity.alternate = anyBlockStatement();
+        }
+      } else if ('IfStatement' === entity.type) {
+        if (0 === sampleOf4) {
+          entity = anyIfStatement();
+        } else if (1 === sampleOf4) {
+          entity.test = anyExpression();
+        } else if (2 === sampleOf4) {
+          entity.consequent = anyBlockStatement();
+        } else if (3 === sampleOf4) {
+          entity.alternate = anyBlockStatement();
+        }
+      } else if ('BinaryExpression' === entity.type) {
+        if (1 === sampleOf4) {
+          entity = anyBinaryOperation();
+        } else if (1 === sampleOf4) {
+          entity.operator = sample(BINARY_OPERATORS);
+        } else if (2 === sampleOf4) {
+          entity.left = anyExpression();
+        } else if (3 === sampleOf4) {
+          entity.right = anyExpression();
+        }
+      } else if ('LogicalExpression' === entity.type) {
+        if (0 === sampleOf4) {
+          entity = anyLogicalExpression();
+        } else if (1 === sampleOf4) {
+          entity.operator = sample(LOGICAL_OPERATORS);
+        } else if (2 === sampleOf4) {
+          entity.left = anyExpression();
+        } else if (3 === sampleOf4) {
+          entity.right = anyExpression();
+        }
+      } else if ('UnaryExpression' === entity.type) {
+        if (0 === sampleOf3) {
+          entity = anyExpression();
+        } else if (1 === sampleOf3) {
+          entity.operator = sample(UNARY_OPERATORS);
+        } else if (2 === sampleOf3) {
+          entity.operand = sample(UNARY_OPERANDS)();
+        }
+      } else if ('Literal' === entity.type || 'Identifier' === entity.type) {
+        entity = anyExpression();
       }
 
       return entity;

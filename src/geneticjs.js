@@ -14,7 +14,8 @@ const FITNESS_FACTOR_LENGTH = -0.2,
   FITNESS_FACTOR_EQUALITY2 = 100,
   FITNESS_FACTOR_EQUALITY3 = 200,
   FITNESS_FACTOR_SYNTAX_ERROR = -1000,
-  FITNESS_FACTOR_RUNTIME_ERROR = -100;
+  FITNESS_FACTOR_RUNTIME_ERROR = -100,
+  EQUALITY_DECIMALS = 6;
 
 const DEBUG_LOGGING = false;
 
@@ -172,18 +173,28 @@ class GeneticJS extends Genetic {
         tests.forEach(test => {
           try {
             actual = f.apply(null, test.params);
-// console.log([actual, test.params]);
+// console.log({actual, expected: test.expected});
             if (actual == test.expected) {
 // console.log('DOUBLE EQUALS!');
               ++resultMatch2s;
               // if expected == actual
               fitPoints += FITNESS_FACTOR_EQUALITY2;
-              if (actual === test.expected) {
+              if ('number' === typeof actual && 'number' === typeof test.expected) {
+                if (actual.toFixed(EQUALITY_DECIMALS) === test.expected.toFixed(EQUALITY_DECIMALS)) {
+// console.log('TRIPLE EQUALS!');
+                  // console.log('fitness strict equality', [code, test.params, actual, test.expected]);
+                  ++resultMatch3s;
+                  // if expected === actual
+                  fitPoints += FITNESS_FACTOR_EQUALITY3;
+// console.log({actual, expected: test.expected});
+                }
+              } else if (actual === test.expected) {
 // console.log('TRIPLE EQUALS!');
                 // console.log('fitness strict equality', [code, test.params, actual, test.expected]);
                 ++resultMatch3s;
                 // if expected === actual
                 fitPoints += FITNESS_FACTOR_EQUALITY3;
+// console.log({actual, expected: test.expected});
               }
             } else {
 // console.log('NO EQUALS!');
@@ -193,7 +204,13 @@ class GeneticJS extends Genetic {
             // if the code throws an exception, only add runtime error points
             fitPoints += FITNESS_FACTOR_RUNTIME_ERROR;
           }
+
+          if (fitPoints > 250) {
+            // console.log({actual, expected: test.expected, fitPoints});
+          }
         });
+
+
         return fitPoints / (tests.length || 1);
       })(rjs);
 
