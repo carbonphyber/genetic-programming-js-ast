@@ -1,9 +1,10 @@
-//
+/* eslint-env node, jest */
+
 const mutator = require('./mutator');
 
 describe('mutator.anyConditional', () => {
   test('returns an expected result object', () => {
-    let rec = mutator.anyConditional();
+    const rec = mutator.anyConditional();
     expect(rec).toHaveProperty('type', 'ConditionalExpression');
     expect(rec).toHaveProperty('test');
     expect(rec).toHaveProperty('consequent');

@@ -1,9 +1,10 @@
-//
+/* eslint-env node, jest */
+
 const mutator = require('./mutator');
 
 describe('mutator.anyBoolean', () => {
   test('returns an expected result object', () => {
-    let rec = mutator.anyBoolean();
+    const rec = mutator.anyBoolean();
     expect(rec).toHaveProperty('type', 'Literal');
     if (rec.value) {
       expect(rec).toHaveProperty('value', true);

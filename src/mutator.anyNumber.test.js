@@ -1,10 +1,11 @@
-//
+/* eslint-env node, jest */
+
 const mutator = require('./mutator');
 
 describe('mutator.anyNumber', () => {
   test('returns an expected result object', () => {
-    let rec = mutator.anyNumber(),
-      v;
+    const rec = mutator.anyNumber();
+    let v;
     // is positive
     if (rec.type === 'ExpressionStatement') {
       v = rec.expression.argument.value;
