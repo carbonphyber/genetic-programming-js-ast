@@ -248,7 +248,7 @@ const anyConditional = function anyConditional() {
 };
 
 const EXPRESSIONS = flatten([
-  createWeightedArray(3, anyParameterExpression),
+  createWeightedArray(4, anyParameterExpression),
   createWeightedArray(2, anyBoolean),
   createWeightedArray(4, anyNumber),
   createWeightedArray(1, anyString),
@@ -256,7 +256,7 @@ const EXPRESSIONS = flatten([
   createWeightedArray(1, anyUndefined),
   createWeightedArray(1, anyNaN),
   createWeightedArray(1, anyInfinity),
-  createWeightedArray(3, anyBinaryOperation),
+  createWeightedArray(10, anyBinaryOperation),
   createWeightedArray(1, anyLogicalExpression),
   createWeightedArray(1, anyUnaryOperation),
   createWeightedArray(2, anyConditional),

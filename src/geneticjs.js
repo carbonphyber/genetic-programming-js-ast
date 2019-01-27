@@ -9,17 +9,33 @@ const sample = require('lodash/sample');
 const Genetic = require('./genetic');
 const mutator = require('./mutator');
 
+// The incremental score for each character length of the code; longer code => lower fitness score
 const FITNESS_FACTOR_LENGTH = -0.002;
+
+// The incremental score for each unit test that matches loosely equal.
 const FITNESS_FACTOR_EQUALITY2 = 0.65;
+
+// The incremental score for each unit test that matches strictly equal.
 const FITNESS_FACTOR_EQUALITY3 = 0.15;
+
+// The incremental score for code which has an interpretation-time error.
 const FITNESS_FACTOR_SYNTAX_ERROR = 0.0;
+
+// The incremental score for code which has an run-time error.
 const FITNESS_FACTOR_RUNTIME_ERROR = 0.20;
+
+// The fitness score is the sum of the incremental component scores.
 const FITNESS_PERFECT_SCORE = FITNESS_FACTOR_EQUALITY3 + FITNESS_FACTOR_EQUALITY2
   + FITNESS_FACTOR_RUNTIME_ERROR + FITNESS_FACTOR_SYNTAX_ERROR;
+
+// For numeric equality testing, check this may decimal places.
+// This avoids imperfect floating point number representation errors.
 const EQUALITY_DECIMALS = 5;
 
+// Enable this to allow debugging.
 const DEBUG_LOGGING = false;
 
+// Skeleton AST for a program (used to wrap function AST for AST testing).
 const stubProgram = {
   type: 'Program',
   body: [
@@ -62,14 +78,8 @@ class GeneticJS extends Genetic {
 
   // eslint-disable-next-line class-methods-use-this
   seed() {
-    // start with a random assortment of 1-5 expression components
+    // start with a random assortment of 1-4 expression components
     const a = map(Array(Math.floor(1 + Math.random() * 3)), mutator.anyBlockStatement);
-
-    // try {
-    // console.log('genetic.seed (after)', createCodeFromAST(a));
-    // } catch(ex) {
-    //   //
-    // }
 
     return a;
   }
@@ -79,12 +89,6 @@ class GeneticJS extends Genetic {
     let ret = entity;
     // console.log('genetic.mutate (before)', JSON.stringify(entity, null, 4));
     // console.log('genetic.mutate (before)', entity.map(e => e.value).join(' '));
-
-    // try {
-    // console.log('genetic.mutate (before)', createCodeFromAST(entity));
-    // } catch(ex) {
-    //   //
-    // }
 
     const THRESHOLD_DELETE = 0.95;
     const THRESHOLD_SHUFFLE = 0.92;
@@ -127,12 +131,6 @@ class GeneticJS extends Genetic {
       // eslint-disable-next-line no-console
       console.log('mutate ELSE');
     }
-
-    // try {
-    // console.log('genetic.mutate (after)', createCodeFromAST(entity));
-    // } catch(ex) {
-    //   //
-    // }
 
     return ret;
   }
@@ -282,7 +280,7 @@ class GeneticJS extends Genetic {
     };
 
     // eslint-disable-next-line no-console
-    console.log('genetic.notification', [pop, generation, stats, isFinished]);
+    console.log('genetic.notification', JSON.stringify([pop, generation, stats, isFinished], null, 4));
     // eslint-disable-next-line no-console
     console.log(
       'iteration',

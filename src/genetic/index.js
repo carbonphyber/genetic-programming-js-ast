@@ -3,10 +3,6 @@
 const cloneDeep = require('lodash/cloneDeep');
 const sample = require('lodash/sample');
 
-// // facilitates communcation between web workers
-// addslashes = function (str) {
-//     return str.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
-// },
 const Serialization = {
   stringify: function serializationStringify(obj) {
     return JSON.stringify(obj, (key, value) => {
@@ -96,18 +92,6 @@ const Select2 = {
       Select1.Random.call(this, pop),
     ];
   },
-  // RandomLinearRank: function RandomLinearRank(pop) {
-  //     return [
-  //         Select1.RandomLinearRank.call(this, pop),
-  //         Select1.RandomLinearRank.call(this, pop)
-  //     ];
-  // },
-  // Sequential: function Sequential(pop) {
-  //     return [
-  //         Select1.Sequential(this, pop),
-  //         Select1.Sequential(this, pop)
-  //     ];
-  // },
   FittestRandom: function FittestRandom(pop) {
     return [
       Select1.Fittest.call(this, pop),
@@ -176,7 +160,6 @@ class GeneticAbstract {
       this.entities.push(seed);
     }
 
-    // console.log('this(.start): ', this);
     for (i = 0; i < conf.iterations; i += 1) {
       // reset for each generation
       this.internalGenState = {};
@@ -266,14 +249,15 @@ class GeneticAbstract {
     let k;
     let l;
     let keys;
+
     keys = Object.keys(config);
     for (k = 0, l = keys.length; k < l; k += 1) {
-      this.configuration[k] = config[k];
+      this.configuration[keys[k]] = config[keys[k]];
     }
 
     keys = Object.keys(userData);
     for (k = 0, l = keys.length; k < l; k += 1) {
-      this.userData[k] = userData[k];
+      this.userData[keys[k]] = userData[keys[k]];
     }
 
     this.start();
