@@ -1,4 +1,5 @@
 /* eslint-env node, jest */
+/* eslint-disable max-classes-per-file */
 
 const Genetic = require('./index');
 

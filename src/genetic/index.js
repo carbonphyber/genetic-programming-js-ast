@@ -1,4 +1,5 @@
 /* eslint-env node */
+/* eslint-disable max-classes-per-file */
 
 const cloneDeep = require('lodash/cloneDeep');
 const sample = require('lodash/sample');
@@ -100,7 +101,6 @@ const Select2 = {
   },
 };
 
-
 class GeneticAbstract {
   constructor() {
     this.optimize = null;
@@ -166,7 +166,7 @@ class GeneticAbstract {
 
       // score and sort
       const pop = this.entities
-        .map(entity => ({
+        .map((entity) => ({
           fitness: this.fitness(entity),
           entity,
         }))
@@ -177,7 +177,7 @@ class GeneticAbstract {
       // generation notification
       const mean = pop.reduce((a, b) => (a + b.fitness), 0) / (pop.length || 1);
       const stdev = Math.sqrt(pop
-        .map(a => ((a.fitness - mean) * (a.fitness - mean)))
+        .map((a) => ((a.fitness - mean) * (a.fitness - mean)))
         .reduce((a, b) => (a + b), 0) / (pop.length || 1));
 
       const stats = {
@@ -217,7 +217,7 @@ class GeneticAbstract {
           const children = this.crossover(
             cloneDeep(parents[0]),
             cloneDeep(parents[1]),
-          ).map(e => this.mutateOrNot(Math.random(), e));
+          ).map((e) => this.mutateOrNot(Math.random(), e));
           newPop.push(children[0], children[1]);
         } else {
           // console.log('Genetic.start() else: ', JSON.stringify(pop));
@@ -263,7 +263,6 @@ class GeneticAbstract {
     this.start();
   }
 }
-
 
 class Genetic extends GeneticAbstract {
   constructor() {

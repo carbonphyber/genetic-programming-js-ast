@@ -1,6 +1,7 @@
 /* eslint-env node */
+/* eslint-disable no-console */
 
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const escodegen = require('escodegen');
 const cloneDeep = require('lodash/cloneDeep');
 const map = require('lodash/map');
@@ -24,9 +25,9 @@ const FITNESS_FACTOR_SYNTAX_ERROR = 0.0;
 // The incremental score for code which has an run-time error.
 const FITNESS_FACTOR_RUNTIME_ERROR = 0.20;
 
-// The fitness score is the sum of the incremental component scores.
-const FITNESS_PERFECT_SCORE = FITNESS_FACTOR_EQUALITY3 + FITNESS_FACTOR_EQUALITY2
-  + FITNESS_FACTOR_RUNTIME_ERROR + FITNESS_FACTOR_SYNTAX_ERROR;
+// // The fitness score is the sum of the incremental component scores.
+// const FITNESS_PERFECT_SCORE = FITNESS_FACTOR_EQUALITY3 + FITNESS_FACTOR_EQUALITY2
+//   + FITNESS_FACTOR_RUNTIME_ERROR + FITNESS_FACTOR_SYNTAX_ERROR;
 
 // For numeric equality testing, check this may decimal places.
 // This avoids imperfect floating point number representation errors.
@@ -188,14 +189,15 @@ class GeneticJS extends Genetic {
               fitPoints += FITNESS_FACTOR_EQUALITY3;
             } else if (Math.abs(actual - test.expected) < 0.001) {
               // eslint-disable-next-line no-console
-              console.log(JSON.stringify(Object.assign({
+              console.log(JSON.stringify({
+                ...test,
                 actualTypeOf: typeof actual,
                 expectedTypeOf: typeof test.expected,
                 actualFixed: actual.toFixed(EQUALITY_DECIMALS),
                 expectedFixed: test.expected.toFixed(EQUALITY_DECIMALS),
                 // eslint-disable-next-line max-len
                 equalityFixed: actual.toFixed(EQUALITY_DECIMALS) === test.expected.toFixed(EQUALITY_DECIMALS),
-              }, test)));
+              }));
             }
           } else if (actual == test.expected) { // eslint-disable-line eqeqeq
             // resultMatch2s += 1;
@@ -213,14 +215,14 @@ class GeneticJS extends Genetic {
         }
       });
 
-      if (fitPoints > (0.96 * FITNESS_PERFECT_SCORE * (tests.length - 1))) {
-        // eslint-disable-next-line no-console
-        console.log(JSON.stringify({
-          failed,
-          fitPoints,
-          numTests: tests.length,
-        }));
-      }
+      // if (fitPoints > (0.96 * FITNESS_PERFECT_SCORE * (tests.length - 1))) {
+      //   // eslint-disable-next-line no-console
+      //   console.log(JSON.stringify({
+      //     failed,
+      //     fitPoints,
+      //     numTests: tests.length,
+      //   }));
+      // }
 
       return fitPoints / (tests.length || 1);
     })(rjs);
@@ -253,50 +255,60 @@ class GeneticJS extends Genetic {
     return pop[0].fitness > this.userData.goal;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   notification(pop, generation, stats, isFinished) {
     // console.log('genetic.notification: ', {isFinished});
-    const now = (new Date()).valueOf() / 1000;
-    const secondsElapsed = now - this.userData.startedAt;
-    const score = pop[0].fitness;
-    const { goal } = this.userData;
+    // const now = (new Date()).valueOf() / 1000;
+    // const secondsElapsed = now - this.userData.startedAt;
+    // const score = pop[0].fitness;
+    // const { goal } = this.userData;
 
-    let gencode;
+    // let gencode;
 
-    try {
-      gencode = createCodeFromAST(pop[0].entity);
-    } catch (ex) {
-      // console.error(ex);
-    }
+    // try {
+    //   gencode = createCodeFromAST(pop[0].entity);
+    // } catch (ex) {
+    //   // console.error(ex);
+    // }
 
-    const logColor = (scoreString, goalNum) => {
-      const scoreNum = +scoreString;
-      let ret = 'green';
-      if (scoreNum <= 0) {
-        ret = 'red';
-      } else if (scoreNum <= goalNum) {
-        ret = 'gray';
-      }
-      return ret;
-    };
+    // const logColor = (scoreString, goalNum) => {
+    //   const scoreNum = +scoreString;
+    //   let ret = 'green';
+    //   if (scoreNum <= 0) {
+    //     ret = 'red';
+    //   } else if (scoreNum <= goalNum) {
+    //     ret = 'gray';
+    //   }
+    //   return ret;
+    // };
 
-    // eslint-disable-next-line no-console
-    console.log('genetic.notification', JSON.stringify([pop, generation, stats, isFinished], null, 4));
-    // eslint-disable-next-line no-console
-    console.log(
-      'iteration',
-      ` ${this.iteration} `,
-      chalk.bold('elapsed: ') + chalk.gray(`${secondsElapsed.toFixed(3)}s`),
-      chalk.bold('score: '), chalk[logColor(score, goal)](score.toFixed(1)),
-      chalk.bold('/ ') + chalk.gray(goal),
-      chalk.bold('code: '),
-      gencode,
-    );
+    // // eslint-disable-next-line no-console
+    // console.log(
+    //   'genetic.notification',
+    //   JSON.stringify([pop, generation, stats, isFinished], null, 4),
+    // );
+    // // eslint-disable-next-line no-console
+    // console.log(
+    //   'iteration',
+    //   ` ${this.iteration} `,
+    //   chalk.bold('elapsed: ') + chalk.gray(`${secondsElapsed.toFixed(3)}s`),
+    //   chalk.bold('score: '), chalk[logColor(score, goal)](score.toFixed(1)),
+    //   chalk.bold('/ ') + chalk.gray(goal),
+    //   chalk.bold('code: '),
+    //   gencode,
+    // );
 
     if (isFinished) {
-      // eslint-disable-next-line no-console
-      console.log('notification stats', stats);
-      // eslint-disable-next-line no-console
-      console.log('WINNER', chalk.black.bgWhite(pop[0].entity.map(e => e.value).join(' ')));
+      // // eslint-disable-next-line no-console
+      // console.log('notification stats', stats);
+      // // eslint-disable-next-line no-console
+      // console.log('WINNER', chalk.black.bgWhite(pop[0].entity.map(e => e.value).join(' ')));
+
+      process.send({
+        msg: {
+          entities: JSON.stringify(pop[0].entity),
+        },
+      });
     }
   }
 }

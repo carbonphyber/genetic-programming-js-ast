@@ -161,7 +161,6 @@ const anyBinaryOperation = function anyBinaryOperation() {
   };
 };
 
-
 const anyLogicalExpression = function anyLogicalExpression() {
   const v = sample(LOGICAL_OPERATORS);
   return {
@@ -291,14 +290,12 @@ const anyBlockStatement = function anyBlockStatement() {
   ]);
   const numOfStatements = sample(BLOCK_STATEMENT_QUANTITIES);
 
-
   const pickAStatement = () => (sample(BLOCK_STATEMENTS)());
   return {
     type: 'BlockStatement',
     body: map(range(0, numOfStatements), pickAStatement),
   };
 };
-
 
 const anyIfStatement = function anyIfStatement() {
   const IF_STATEMENT_CONSEQUENTS = flatten([
@@ -307,7 +304,6 @@ const anyIfStatement = function anyIfStatement() {
     createWeightedArray(1, anyLogicalExpression),
     createWeightedArray(4, anyExpressionStatement),
   ]);
-
 
   const IF_STATEMENT_ALTERNATES = flatten([
     createWeightedArray(1, anyBlockStatement),
@@ -326,9 +322,6 @@ const anyIfStatement = function anyIfStatement() {
   }
   return ret;
 };
-
-
-//
 
 const shuffleSomething = function shuffleSomething(entity) {
   let ret = entity;
@@ -358,9 +351,6 @@ const shuffleSomething = function shuffleSomething(entity) {
   return ret;
 };
 
-
-//
-
 const deleteSomething = function deleteSomething(entity) {
   let ret = entity;
   const pos = Math.floor(Math.random() * ret.length);
@@ -378,9 +368,6 @@ const deleteSomething = function deleteSomething(entity) {
   }
   return ret;
 };
-
-
-//
 
 const insertSomething = function insertSomething(entity) {
   let ret = entity;
@@ -424,9 +411,6 @@ const insertSomething = function insertSomething(entity) {
 
   return ret;
 };
-
-
-//
 
 const updateSomething = function updateSomething(entity) {
   let ret = entity;
