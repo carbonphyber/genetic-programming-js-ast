@@ -24,7 +24,7 @@ Also, I found [genetic-js](https://www.npmjs.com/package/genetic-js), a great li
 
 ### How do I use this? ###
 
-To run the genetic program generator, run `node index.js` from command line. This script should run fune under `Node 6.x` and newer on a Linux/BSD/Darwin OS. It should be easy/quick to port it to run on Node Windows (pull requests welcome).
+To run the genetic program generator, run `node index.js` from command line. This script should run fine under `Node 6.x` and newer on a Linux/BSD/Darwin OS. It should be easy/quick to port it to run on Node Windows (pull requests welcome).
 
 To create your own unit test set (which will generate different code), clone `tests/1.js`, alter the tests, and edit the parameter at the bottom of `index.js`, which describes which test should be used.
 
